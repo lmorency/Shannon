@@ -6,7 +6,7 @@ Canonical ids live in `hub/agent_identity.py`, in three nested tiers:
 |------|-------|------------|
 | `CORE_AGENT_IDS` | 6 | grok_build, codex, claude_code, dispatch, cowork, science — surface as `"core": true` in `roster --json` |
 | `HANDRAIL_AGENT_IDS` | 8 | core + design + opencode — **exactly what `agent_manager roster` prints** |
-| `IDENTITIES` | 17 | every id the gate accepts (`agent_protocol.VALID_AGENTS` is the same set) |
+| `IDENTITIES` | full catalog | every id the gate accepts (`agent_protocol.VALID_AGENTS` is the same set). Count is `len(IDENTITIES)` — regenerate rather than freezing a number. |
 
 An id being absent from `roster` does **not** make it invalid. Most importantly,
 `dataset_runner` — the heavy docking owner that every campaign example uses — is
@@ -27,7 +27,10 @@ a real identity that `roster` never prints.
 
 ## Extended (valid on the wire, never returned by `roster`)
 
-chatgpt, dataset_runner, local_test, terminal, browser, cursor, vscode, xcode, kimi
+chatgpt, dataset_runner, local_test, terminal, browser, cursor, vscode,
+xcode, kimi, t1_code, t3_code, omp, pi, grok_bot
+
+Control-plane vs worker (T1/T3, remotes, Cowork iOS, Dispatch): **`hosts.md`**.
 
 Regenerate this list rather than trusting it:
 
@@ -54,6 +57,16 @@ That is what silently defeats the `--connected` dual-owner guard.
 | claude_design, claudedesign, des | design |
 | oc, open_code | opencode |
 | dr, dataset | dataset_runner |
+| t1, t1code | t1_code |
+| t3, t3code | t3_code |
+| omp, oh_my_pi, ohmypi | omp |
+| grokbot, grok_bot | grok_bot |
+| cursor_agent, cursoragent | cursor |
+| chatgpt_remote | chatgpt |
+| codex_remote | codex |
+| claude_code_remote, claude_remote | claude_code |
+| cowork_ios, ios_cowork | cowork |
+| macos_dispatch, macos_claude_dispatch, dispatch_macos | dispatch |
 
 Unrecognised slugs are returned **unchanged**, not rejected — see the
 `--dry-run` caveat in `cli.md`.

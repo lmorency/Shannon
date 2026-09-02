@@ -34,6 +34,19 @@ class TestNormalizeAgentId:
             ("OpenCode", "opencode"),
             ("oc", "opencode"),
             ("dataset", "dataset_runner"),
+            ("t1code", "t1_code"),
+            ("T1 Code", "t1_code"),
+            ("t3-code", "t3_code"),
+            ("oh-my-pi", "omp"),
+            ("omp", "omp"),
+            ("pi", "pi"),
+            ("grok-bot", "grok_bot"),
+            ("cursor-agent", "cursor"),
+            ("cowork-ios", "cowork"),
+            ("macos-dispatch", "dispatch"),
+            ("chatgpt-remote", "chatgpt"),
+            ("claude-code-remote", "claude_code"),
+            ("codex-remote", "codex"),
         ],
     )
     def test_aliases(self, raw, want):
@@ -154,3 +167,15 @@ class TestIdentitiesShipped:
         assert "opencode" in IDENTITIES
         assert IDENTITIES["design"].display_name == "Claude Design"
         assert IDENTITIES["opencode"].display_name == "OpenCode"
+
+    def test_skill_host_identities(self):
+        assert IDENTITIES["t1_code"].display_name == "T1 Code"
+        assert IDENTITIES["t3_code"].display_name == "T3 Code"
+        assert IDENTITIES["omp"].display_name == "Oh-My-Pi"
+        assert IDENTITIES["pi"].display_name == "Pi"
+        assert IDENTITIES["grok_bot"].display_name == "Grok Bot"
+        assert IDENTITIES["cursor"].display_name == "Cursor"
+        # Control planes must not collide with the workers they launch.
+        assert IDENTITIES["t3_code"].id != IDENTITIES["claude_code"].id
+        assert IDENTITIES["grok_bot"].id != IDENTITIES["grok_build"].id
+        assert IDENTITIES["omp"].id != IDENTITIES["pi"].id

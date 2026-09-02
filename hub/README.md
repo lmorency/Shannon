@@ -62,3 +62,4 @@ pytest hub/tests/ -v
 - Shannon UI (macOS HUD): [LeBonhommePharma/ShannonUI](https://github.com/LeBonhommePharma/ShannonUI) · [docs/SHANNON_UI.md](../docs/SHANNON_UI.md)
 - Shannon CLI entropy monitor: `shannon-monitor --help`
 - Ori-style agent harness: `shannon grok` / `shannon claude` / `shannon codex`
+  / `shannon omp` / `shannon t1code` / `shannon t3code`

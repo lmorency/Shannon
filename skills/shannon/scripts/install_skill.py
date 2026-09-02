@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Install the Shannon skill into host agent skill directories.
 
-Copies (or symlinks) skills/shannon → Claude / Codex / Grok / OpenCode / agents
-trees so TUIs load the same handrail.
+Copies (or symlinks) skills/shannon → Claude / Codex / Grok / OpenCode /
+Cursor / Oh-My-Pi / Pi / Copilot / agents trees so TUIs and remote control
+planes load the same handrail.
 
 Usage
 -----
@@ -20,6 +21,37 @@ import sys
 from pathlib import Path
 
 
+# Project-local trees (always written). T1/T3 Code discover Claude/Codex/
+# Cursor/Grok/OpenCode/.agents skills rather than a vendor-specific dir.
+PROJECT_RELATIVE: tuple[tuple[str, ...], ...] = (
+    (".claude", "skills", "shannon"),
+    (".grok", "skills", "shannon"),
+    (".agents", "skills", "shannon"),
+    (".agent", "skills", "shannon"),
+    (".cursor", "skills", "shannon"),
+    (".codex", "skills", "shannon"),
+    (".opencode", "skills", "shannon"),
+    (".omp", "skills", "shannon"),
+    (".pi", "skills", "shannon"),
+    (".github", "skills", "shannon"),
+)
+
+# User-level trees (written when the host config already exists, or --force).
+USER_RELATIVE: tuple[tuple[str, ...], ...] = (
+    (".claude", "skills", "shannon"),
+    (".codex", "skills", "shannon"),
+    (".grok", "skills", "shannon"),
+    (".cursor", "skills", "shannon"),
+    (".agents", "skills", "shannon"),
+    (".agent", "skills", "shannon"),
+    (".config", "opencode", "skills", "shannon"),
+    (".opencode", "skills", "shannon"),
+    (".omp", "agent", "skills", "shannon"),
+    (".pi", "agent", "skills", "shannon"),
+    (".copilot", "skills", "shannon"),
+)
+
+
 def repo_root() -> Path:
     # skills/shannon/scripts/thisfile → repo
     return Path(__file__).resolve().parents[3]
@@ -31,45 +63,59 @@ def skill_source(root: Path) -> Path:
 
 def candidate_targets(root: Path, home: Path) -> list[Path]:
     """Ordered install destinations (project first, then user hosts)."""
-    paths = [
-        root / ".claude" / "skills" / "shannon",
-        root / ".grok" / "skills" / "shannon",
-        root / ".agents" / "skills" / "shannon",
-        home / ".claude" / "skills" / "shannon",
-        home / ".codex" / "skills" / "shannon",
-        home / ".grok" / "skills" / "shannon",
-        home / ".config" / "opencode" / "skills" / "shannon",
-        home / ".opencode" / "skills" / "shannon",
-    ]
+    paths = [root.joinpath(*parts) for parts in PROJECT_RELATIVE]
+    paths.extend(home.joinpath(*parts) for parts in USER_RELATIVE)
     # Sibling FlexAIDdS when present
     flex = home / "Projects" / "FlexAIDdS"
     if flex.is_dir():
         paths.append(flex / ".agents" / "skills" / "shannon")
         paths.append(flex / ".claude" / "skills" / "shannon")
         paths.append(flex / ".grok" / "skills" / "shannon")
+        paths.append(flex / ".cursor" / "skills" / "shannon")
+        paths.append(flex / ".omp" / "skills" / "shannon")
     return paths
 
 
-def should_install(path: Path, *, force_user: bool) -> bool:
-    """Only write under trees that already exist (or project-local)."""
-    # Always allow project-local .claude/.grok/.agents under the Shannon repo.
-    parts = path.parts
-    if ".claude" in parts or ".grok" in parts or ".agents" in parts:
-        # If parent skills dir exists or we are inside the Shannon repo project
-        parent = path.parent
-        if parent.exists() or force_user:
-            return True
-        # Create project-local trees even if missing
-        try:
-            # project root is parents[2] for .claude/skills/shannon
-            if (path.parents[2] / "skills" / "shannon").is_dir():
-                return True
-        except IndexError:
-            pass
-    # User host: only if skills parent or grandparent config exists
+def _is_under(path: Path, root: Path) -> bool:
+    try:
+        return path.is_relative_to(root)
+    except AttributeError:
+        return os.path.commonpath([str(path), str(root)]) == str(root)
+    except ValueError:
+        return False
+
+
+def should_install(path: Path, root: Path, *, force_user: bool) -> bool:
+    """Write project-local trees always; user hosts only when already present."""
+    if _is_under(path, root):
+        return True
+    if force_user:
+        return True
     if path.parent.exists() or path.parent.parent.exists():
         return True
-    return force_user
+    # ~/.omp or ~/.pi is enough to create agent/skills underneath.
+    vendor_roots = {
+        ".claude",
+        ".codex",
+        ".grok",
+        ".cursor",
+        ".agents",
+        ".agent",
+        ".opencode",
+        ".omp",
+        ".pi",
+        ".copilot",
+    }
+    for ancestor in list(path.parents)[:6]:
+        if ancestor.name in vendor_roots and ancestor.exists():
+            return True
+        if (
+            ancestor.name == "opencode"
+            and ancestor.parent.name == ".config"
+            and ancestor.exists()
+        ):
+            return True
+    return False
 
 
 def install_one(
@@ -124,23 +170,8 @@ def main(argv: list[str] | None = None) -> int:
     home = Path(args.home).expanduser()
     results = []
     for dest in candidate_targets(root, home):
-        if not should_install(dest, force_user=args.force):
-            # Still install project-local always
-            if root in dest.parents or dest.is_relative_to(root):
-                pass
-            else:
-                results.append(f"skip (no host tree): {dest}")
-                continue
-        # Always install into repo-local skill dirs
-        try:
-            rel_ok = dest.is_relative_to(root)
-        except AttributeError:
-            rel_ok = str(dest).startswith(str(root))
-        if not rel_ok and not should_install(dest, force_user=args.force):
-            results.append(f"skip: {dest}")
-            continue
-        if not rel_ok and not (dest.parent.exists() or dest.parent.parent.exists() or args.force):
-            results.append(f"skip (host absent): {dest}")
+        if not should_install(dest, root, force_user=args.force):
+            results.append(f"skip (no host tree): {dest}")
             continue
         msg = install_one(src, dest, symlink=args.symlink, dry_run=args.dry_run)
         results.append(msg)

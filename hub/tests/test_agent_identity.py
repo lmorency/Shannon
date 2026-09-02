@@ -89,6 +89,22 @@ class TestCoreSixIdentities:
         assert IDENTITIES["grok_build"].id != "science"
         assert IDENTITIES["grok_build"].emoji != IDENTITIES["science"].emoji
 
+    def test_skill_host_agents_are_first_class(self):
+        """T1/T3/OMP/Pi/Grok Bot must be VALID_AGENTS so live spawn works."""
+        for aid, name in (
+            ("t1_code", "T1 Code"),
+            ("t3_code", "T3 Code"),
+            ("omp", "Oh-My-Pi"),
+            ("pi", "Pi"),
+            ("grok_bot", "Grok Bot"),
+        ):
+            assert aid in IDENTITIES, f"missing {aid}"
+            assert name in IDENTITIES[aid].display_name
+        assert IDENTITIES["t1_code"].id != IDENTITIES["t3_code"].id
+        assert IDENTITIES["omp"].id != IDENTITIES["pi"].id
+        assert IDENTITIES["grok_bot"].id != IDENTITIES["grok_build"].id
+        assert IDENTITIES["grok_bot"].emoji != IDENTITIES["grok_build"].emoji
+
 
 class TestStatusFromPayload:
     @pytest.mark.parametrize("agent_id", list(CORE_AGENT_IDS))

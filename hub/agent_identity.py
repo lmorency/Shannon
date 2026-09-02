@@ -267,6 +267,66 @@ IDENTITIES.update(
             pet="octopus",  # many arms / tools
             pet_symbol="ellipsis.circle.fill",
         ),
+        # T1 Code = T3 Code in the terminal (control plane over provider CLIs).
+        "t1_code": AgentIdentity(
+            id="t1_code",
+            display_name="T1 Code",
+            short_name="T1",
+            emoji="📟",
+            color_rgb=(0.90, 0.35, 0.40),
+            system_image="apple.terminal",
+            auth_kind="local",
+            pet="ferret",
+            pet_symbol="rectangle.portrait.on.rectangle.portrait.fill",
+        ),
+        # T3 Code = desktop/web/mobile control plane (Claude/Codex/Cursor/Grok/OpenCode).
+        "t3_code": AgentIdentity(
+            id="t3_code",
+            display_name="T3 Code",
+            short_name="T3",
+            emoji="🎛️",
+            color_rgb=(0.40, 0.22, 0.85),
+            system_image="macwindow.on.rectangle",
+            auth_kind="local",
+            pet="bee",
+            pet_symbol="hexagon.fill",
+        ),
+        # Oh-My-Pi (`omp`) — Pi fork; skill dirs are .omp/skills and ~/.omp/agent/skills.
+        "omp": AgentIdentity(
+            id="omp",
+            display_name="Oh-My-Pi",
+            short_name="OMP",
+            emoji="🥧",
+            color_rgb=(0.85, 0.55, 0.15),
+            system_image="circle.grid.3x3.fill",
+            auth_kind="local",
+            pet="raccoon",
+            pet_symbol="circle.grid.cross.fill",
+        ),
+        # Upstream Pi (pi.dev) — `shannon pi` already launches this binary.
+        "pi": AgentIdentity(
+            id="pi",
+            display_name="Pi",
+            short_name="Pi",
+            emoji="🔷",
+            color_rgb=(0.20, 0.42, 0.82),
+            system_image="function",
+            auth_kind="local",
+            pet="lemur",
+            pet_symbol="leaf.fill",
+        ),
+        # Grok Bot (grok.com / X) — distinct from Grok Build CLI (`grok_build`).
+        "grok_bot": AgentIdentity(
+            id="grok_bot",
+            display_name="Grok Bot",
+            short_name="GBot",
+            emoji="🤖",
+            color_rgb=(0.50, 0.18, 0.72),
+            system_image="message.fill",
+            auth_kind="cloud",
+            pet="crow",
+            pet_symbol="message.badge.fill",
+        ),
     }
 )
 

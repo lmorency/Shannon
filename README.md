@@ -224,7 +224,9 @@ python3 -m agent_manager monitor --dry-run
 
 - **Sole heavy docking owner:** `dataset_runner` (dual-owner plans refuse)
 - **Bridge:** `hub/tools/dataset_runner_bridge.py` → hub `benchmark_state` progress
-- **Skill handrail:** [`.grok/skills/shannon/SKILL.md`](.grok/skills/shannon/SKILL.md) (install into Claude / Codex / Grok TUIs)
+- **Skill handrail:** [`skills/shannon/SKILL.md`](skills/shannon/SKILL.md)
+  (install into Claude / Codex / Grok / OpenCode / Cursor / Oh-My-Pi / Pi /
+  T1 Code / T3 Code, plus Cowork/Dispatch via `.claude-plugin/plugin.json`)
 
 Hub overview: [`hub/README.md`](hub/README.md) · gate protocol lives under `hub/`.
 

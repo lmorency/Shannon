@@ -451,8 +451,8 @@ In Shannon UI:
   ./scripts/shannon agent-demo            live socket demo agent (needs gate)
   ./scripts/shannon export                session timeline JSONL
   ./scripts/shannon science               pure-Python library from this clone
-  ./scripts/shannon skill-install         install Shannon skill into Claude/Codex/Grok/OpenCode
-  ./scripts/shannon grok|claude|codex …   Ori-style harness (real CLI on PATH)
+  ./scripts/shannon skill-install         install Shannon skill into Claude/Codex/Grok/OpenCode/Cursor/OMP/Pi
+  ./scripts/shannon grok|claude|codex|omp|t1code|t3code …   Ori-style harness (real CLI on PATH)
   ./scripts/shannon help                  this dual-product map
 
   shannon grok | shannon claude | shannon codex
@@ -570,7 +570,7 @@ PY
   help|-h|--help)
     usage
     ;;
-  claude|claude_code|cc|claudecode|codex|openai_codex|grok|grok_build|xai|grokbuild|opencode|open_code|oc|deepseek|ds|deepseek_tui|kimi|hermes|pi|cursor|prime-agent|prime_agent|primeagent)
+  claude|claude_code|cc|claudecode|codex|openai_codex|grok|grok_build|xai|grokbuild|opencode|open_code|oc|deepseek|ds|deepseek_tui|kimi|hermes|pi|cursor|cursor-agent|cursor_agent|cursoragent|t1code|t1_code|t1-code|t1|t3code|t3_code|t3-code|t3|omp|oh-my-pi|oh_my_pi|ohmypi|prime-agent|prime_agent|primeagent)
     # Ori-style: ./scripts/shannon grok  →  python -m shannon.cli grok …
     export PYTHONPATH="${REPO}/python:${HUB}${PYTHONPATH:+:$PYTHONPATH}"
     exec python3 -m shannon.cli "${CMD}" "$@"

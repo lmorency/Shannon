@@ -141,6 +141,42 @@ HARNESSES: tuple[AgentHarness, ...] = (
         docs_url="https://cursor.com",
     ),
     AgentHarness(
+        keyword="cursor-agent",
+        aliases=("cursor_agent", "cursoragent"),
+        binary="cursor-agent",
+        agent_id="cursor",
+        display_name="Cursor Agent",
+        install_hint="Install Cursor CLI; then `agent login` (T3 Code uses this binary).",
+        docs_url="https://cursor.com/cli",
+    ),
+    AgentHarness(
+        keyword="t1code",
+        aliases=("t1_code", "t1-code", "t1"),
+        binary="t1code",
+        agent_id="t1_code",
+        display_name="T1 Code",
+        install_hint="bun add -g @maria_rcks/t1code",
+        docs_url="https://github.com/maria-rcks/t1code",
+    ),
+    AgentHarness(
+        keyword="t3code",
+        aliases=("t3_code", "t3-code", "t3"),
+        binary="t3code",
+        agent_id="t3_code",
+        display_name="T3 Code",
+        install_hint="Install T3 Code from https://t3.codes (desktop / web / mobile).",
+        docs_url="https://github.com/pingdotgg/t3code",
+    ),
+    AgentHarness(
+        keyword="omp",
+        aliases=("oh_my_pi", "oh-my-pi", "ohmypi"),
+        binary="omp",
+        agent_id="omp",
+        display_name="Oh-My-Pi",
+        install_hint="curl -fsSL https://omp.sh/install | sh",
+        docs_url="https://github.com/can1357/oh-my-pi",
+    ),
+    AgentHarness(
         keyword="prime-agent",
         aliases=("prime_agent", "primeagent"),
         binary="prime-agent",
@@ -152,12 +188,16 @@ HARNESSES: tuple[AgentHarness, ...] = (
 )
 
 
+def _normalize_keyword(raw: str) -> str:
+    return (raw or "").strip().lower().replace(" ", "_").replace("-", "_")
+
+
 def _index_harnesses() -> dict[str, AgentHarness]:
     out: dict[str, AgentHarness] = {}
     for spec in HARNESSES:
-        out[spec.keyword] = spec
+        out[_normalize_keyword(spec.keyword)] = spec
         for alias in spec.aliases:
-            out[alias] = spec
+            out[_normalize_keyword(alias)] = spec
     return out
 
 
@@ -178,10 +218,6 @@ def resolve_harness(raw: str) -> AgentHarness | None:
     if not key:
         return None
     return _HARNESS_BY_KEYWORD.get(key)
-
-
-def _normalize_keyword(raw: str) -> str:
-    return (raw or "").strip().lower().replace(" ", "_")
 
 
 @dataclass(frozen=True, slots=True)

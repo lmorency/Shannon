@@ -49,6 +49,20 @@ class TestSkillMdCliContract:
         assert "./scripts/shannon hub spawn" not in text
         assert "./scripts/shannon hub monitor" not in text
 
+    def test_skill_md_points_at_hosts_reference(self):
+        text = SKILL_MD.read_text(encoding="utf-8")
+        assert "references/hosts.md" in text
+        assert "t1_code" in text
+        assert "t3_code" in text
+        assert "17 ids" not in text
+        assert "17-id" not in text
+        hosts = (REPO / "skills" / "shannon" / "references" / "hosts.md").read_text(
+            encoding="utf-8"
+        )
+        assert "Cowork" in hosts
+        assert "ChatGPT" in hosts
+        assert "NDJSON" in hosts or "JSON Lines" in hosts
+
     def test_skill_md_documents_agent_lifecycle_cli(self):
         text = SKILL_MD.read_text(encoding="utf-8")
         found = _REQUIRED_AGENT_CLI.findall(text)
@@ -136,6 +150,16 @@ class TestScriptsShannonAgentDryRun:
         data = json.loads(proc.stdout)
         assert data["action"] == "kill"
         assert data["agent_id"] == "codex"
+
+    def test_agent_spawn_omp_and_t3_dry_run(self):
+        for aid, task in (("omp", "contract_omp"), ("t3_code", "contract_t3")):
+            proc = self._run_agent(
+                "spawn", aid, "--task", task, "--dry-run", "--json"
+            )
+            assert proc.returncode == 0, proc.stderr + proc.stdout
+            data = json.loads(proc.stdout)
+            assert data["agent_id"] == aid
+            assert data["task_id"] == task
 
     def test_agent_control_dry_run(self):
         proc = self._run_agent(

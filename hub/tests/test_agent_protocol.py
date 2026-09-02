@@ -58,6 +58,14 @@ class TestAgentClientConstruction:
         with pytest.raises(ValueError):
             ap.AgentClient("mallory", "task_1")
 
+    @pytest.mark.parametrize(
+        "agent_id",
+        ["t1_code", "t3_code", "omp", "pi", "grok_bot", "cursor", "chatgpt"],
+    )
+    def test_new_skill_host_ids_construct(self, agent_id):
+        client = ap.AgentClient(agent_id, "task_hosts")
+        assert client.agent_id == agent_id
+
     def test_invalid_mode_raises(self):
         with pytest.raises(ValueError):
             ap.AgentClient("science", "task_1", mode="carrier_pigeon")

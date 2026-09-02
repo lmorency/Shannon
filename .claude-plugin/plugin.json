@@ -1,0 +1,17 @@
+{
+  "name": "shannon",
+  "version": "2.1.0",
+  "description": "Shannon hub handrail: FlexAIDdS campaigns, Claude Code ↔ Codex pair work, and gate lifecycle (spawn/control/monitor/ask/result/kill) for Claude Code, Cowork, Dispatch, Codex, Cursor, OpenCode, Grok, Oh-My-Pi, T1 Code, and T3 Code.",
+  "author": {
+    "name": "LeBonhommePharma"
+  },
+  "keywords": [
+    "shannon",
+    "hub",
+    "cowork",
+    "dispatch",
+    "codex",
+    "opencode",
+    "cursor"
+  ]
+}

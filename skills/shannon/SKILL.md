@@ -5,16 +5,19 @@ description: >
   campaign orchestration and Claude Code ↔ Codex pair work (half-and-half
   implement + cross-review), and delegates collaborative agents (Codex, Claude
   Code, Claude Science, Claude Cowork, Dispatch, Design, Grok Build, OpenCode,
-  DatasetRunner) through the Shannon Gate regardless of which upstream model API
-  they use. It also prepares resumable, evidence-complete handoffs to Claude
-  Code, Dispatch, or dependency-ordered Claude Science/Fable session packs from
-  an in-flight dirty checkout. Use for multi-agent FlexAIDdS ownership,
-  pair/cross-review, Fable multi-session handoff, handoff/resume/transfer,
-  plan/delegate, hub attach, gate status, approval asks, and when any agent must
-  report lifecycle/status/results to the Shannon pill.
+  DatasetRunner, Cursor, Oh-My-Pi, Pi, T1 Code, T3 Code, Grok Bot) through the
+  Shannon Gate regardless of which upstream model API they use. It also
+  prepares resumable, evidence-complete handoffs to Claude Code, Dispatch, or
+  dependency-ordered Claude Science/Fable session packs from an in-flight
+  dirty checkout. Use for multi-agent FlexAIDdS ownership, pair/cross-review,
+  Fable multi-session handoff, handoff/resume/transfer, plan/delegate, hub
+  attach, gate status, approval asks, and when any agent must report
+  lifecycle/status/results to the Shannon pill — including Claude Code remote,
+  ChatGPT/Codex remote, macOS Dispatch, and Cowork on iOS.
   Triggers: /shannon, "shannon hub", "attach agent", "spawn agent",
   "monitor agents", "kill agent", "campaign", "delegate", "pair",
-  "cross-review", concurrent agentic benchmarking.
+  "cross-review", concurrent agentic benchmarking, T1 Code, T3 Code,
+  oh-my-pi, cowork, dispatch.
 ---
 
 # Shannon — Hub Agent Handrail
@@ -40,7 +43,10 @@ owners or dual reviewers.
 - Starting or joining a multi-agent session through the hub
 - Reporting progress, results, or approval needs to the human via the pill
 - Listing who is online / detaching a stuck agent
-- Any host TUI (Claude Code, Codex, Grok Build, OpenCode, Cowork, Dispatch, Design)
+- Any host TUI (Claude Code, Codex, Grok Build, OpenCode, Cowork, Dispatch,
+  Design, Cursor, Oh-My-Pi, Pi, T1 Code, T3 Code, Grok Bot)
+- Claude Code remote, ChatGPT/Codex remote, macOS Dispatch, Cowork on iOS
+  (same skill; see `references/hosts.md`)
 
 ## ⚠ Reading `monitor` correctly — do this before you plan
 
@@ -124,8 +130,8 @@ The 8 ids below are the **handrail roster** — exactly what
 | `opencode` | OpenCode | OpenCode TUI |
 
 **`dataset_runner` (DatasetRunner) — the heavy docking owner — is a valid
-canonical id that `roster` does NOT print.** The gate accepts 17 ids
-(`IDENTITIES` = `VALID_AGENTS`); `roster` shows only the 8 collaborative
+canonical id that `roster` does NOT print.** The gate accepts every id in
+`IDENTITIES` (`VALID_AGENTS`); `roster` shows only the 8 collaborative
 workers. Never conclude an id is invalid because `roster` omitted it.
 
 **Pick your own id by host process, not by task:** a Claude Code CLI session is
@@ -134,7 +140,10 @@ Science / Fable sessions.
 
 Aliases are normalized (trim, lower-case, spaces/hyphens → `_`) before lookup:
 `grok`→`grok_build`, `claude`→`claude_code`, `sci`→`science`, `des`→`design`,
-`oc`→`opencode`, `dr`/`dataset`→`dataset_runner`, …
+`oc`→`opencode`, `dr`/`dataset`→`dataset_runner`, `t1`/`t1code`→`t1_code`,
+`t3`/`t3code`→`t3_code`, `omp`/`oh-my-pi`→`omp`, `grok-bot`→`grok_bot`,
+`cursor-agent`→`cursor`, `cowork-ios`→`cowork`, `macos-dispatch`→`dispatch`,
+`chatgpt-remote`→`chatgpt`, `claude-code-remote`→`claude_code`, …
 
 Tiers, full alias table, and the extended ids: **`references/agents.md`**.
 Complete flag / exit-code / JSON-field reference: **`references/cli.md`**.
@@ -258,14 +267,22 @@ python3 skills/shannon/scripts/install_skill.py
 `--force` also creates host trees that do not exist yet. Destinations that are
 already symlinks into this repo are skipped, so re-running is safe.
 
-Destinations (written only where the parent tree already exists):
+Destinations (user trees written only where the parent already exists, unless
+`--force`):
 
-- Project: `.claude/skills/shannon`, `.grok/skills/shannon`, `.agents/skills/shannon`
-- User: `~/.claude/skills/shannon`, `~/.codex/skills/shannon`, `~/.grok/skills/shannon`
-- OpenCode: `~/.config/opencode/skills/shannon` **and** `~/.opencode/skills/shannon`
-- FlexAIDdS sibling (path hardcoded to `~/Projects/FlexAIDdS`): `.agents/`,
-  `.claude/`, and `.grok/skills/shannon` — note this writes into a *different*
-  git repo; check `git status` there afterwards.
+- Project: `.claude`, `.grok`, `.agents`, `.agent`, `.cursor`, `.codex`,
+  `.opencode`, `.omp`, `.pi`, `.github` → `skills/shannon`
+- User: `~/.claude`, `~/.codex`, `~/.grok`, `~/.cursor`, `~/.agents`,
+  `~/.agent`, `~/.config/opencode`, `~/.opencode`, `~/.omp/agent`,
+  `~/.pi/agent`, `~/.copilot` → `skills/shannon`
+- FlexAIDdS sibling (path hardcoded to `~/Projects/FlexAIDdS`): `.agents`,
+  `.claude`, `.grok`, `.cursor`, `.omp` → `skills/shannon` — note this writes
+  into a *different* git repo; check `git status` there afterwards.
+
+T1 Code / T3 Code have no vendor skill dir of their own: they inherit Claude,
+Codex, Cursor, Grok, OpenCode, and `.agents`. Cowork (including iOS) and
+macOS Dispatch load this pack as a Claude plugin (`.claude-plugin/plugin.json`)
+and via `~/.claude/skills`. Host matrix: **`references/hosts.md`**.
 
 ## Session protocol (copy into agent system notes)
 
@@ -349,7 +366,7 @@ See `references/flexaidds.md`. Summary:
 | `monitor` shows `(none)` but an owner is running | Only believable with `roster_known: true`. If it says `connected: UNKNOWN`, that is the honest answer, not an idle hub. |
 | Dispatch vanished from the pill | Someone ran a bare `monitor`; it registers as `dispatch` and the gate replaces the existing connection. Always `monitor --agent <your id>`. |
 | `gate offline` / `gate-status` exit 2 | `gate-status` connects rather than stats, so a stale `/tmp/shannon.sock` from a dead gate reads down. `./scripts/shannon gate` removes a stale socket before relaunch — but only when no `shannon_gate.py` is alive. If it says "already running" while `gate-status` stays exit 2, the gate is wedged: `pkill -f shannon_gate.py`, then `./scripts/shannon gate`. If it cannot be brought up, hard rule 3 forbids heavy work. |
-| Typo'd / unknown agent id | The CLI does **not** reject it — `--dry-run` plans it and exits 0 with a generic ⚙️ label. Only a live call raises (`Unknown agent_id`, exit 1) — and that error prints the full 17-id valid set, which is the list to trust, not `roster`. Add genuinely new hosts to `IDENTITIES` in `hub/agent_identity.py` **and restart the gate**. |
+| Typo'd / unknown agent id | The CLI does **not** reject it — `--dry-run` plans it and exits 0 with a generic ⚙️ label. Only a live call raises (`Unknown agent_id`, exit 1) — and that error prints the full `IDENTITIES` set, which is the list to trust, not `roster`. Add genuinely new hosts to `IDENTITIES` in `hub/agent_identity.py` **and restart the gate**. |
 | Campaign **or `delegate`** refused (exit 3) | A canonical heavy-owner id is in the `--connected` roster you passed. Kill the existing owner, then re-plan. |
 | Guard did *not* refuse but an owner is live | You passed a Display string (`DatasetRunner`) or a non-`dataset_runner` `--owner`. Re-run with the canonical id. |
 | `pair` argparse conflict | Use **`--pair-mode`**, not `--mode` (`--mode` is socket\|http only). An unknown `--pair-mode` value is a soft refusal: `refused: true`, empty `agents[]`. |
@@ -369,6 +386,7 @@ See `references/flexaidds.md`. Summary:
 | This **SKILL** | `skills/shannon/SKILL.md` |
 | CLI reference | `skills/shannon/references/cli.md` |
 | Agent roster reference | `skills/shannon/references/agents.md` |
+| Host surfaces (T1/T3/OMP/Cursor/remote/Cowork) | `skills/shannon/references/hosts.md` |
 | Pair reference | `skills/shannon/references/pair_work.md` |
 | Handoff reference | `skills/shannon/references/handoff.md` |
 | Fable session-pack reference | `skills/shannon/references/fable_handoffs.md` |

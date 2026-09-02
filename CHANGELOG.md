@@ -38,6 +38,14 @@ All notable changes to Shannon are documented in this file.
 
 ### Added
 
+- **Skill hosts for T1 Code, T3 Code, Oh-My-Pi, Cursor, remotes, Cowork/Dispatch**
+  — installer writes Cursor / Codex / OpenCode / `.omp` / `.pi` / `.github` /
+  Copilot skill trees; gate identities `t1_code`, `t3_code`, `omp`, `pi`,
+  `grok_bot`; harness keywords `t1code`, `t3code`, `omp`, `cursor-agent`;
+  Claude plugin manifest for macOS Dispatch + Cowork (including iOS);
+  `skills/shannon/references/hosts.md` for control-plane vs worker and
+  JSONL/NDJSON remote streams. Claude Code remote and ChatGPT/Codex remote
+  reuse `claude_code` / `codex` (no second orchestrator).
 - **Phase D C++26 hatches (ENH-039)** — `TokenCallbackRef` (`std::function_ref`),
   `SHANNON_CONTRACT_ASSERT`, `#embed` of `data/soft_contact_256.bin` after path
   search, `SoftContactMatrix::load_from_memory`, `nth_type_t` pack-indexing

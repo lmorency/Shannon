@@ -284,3 +284,10 @@ class TestCursorIdentity:
         assert "claude" not in IDENTITIES["xcode"].display_name.lower()
         assert "grok_build" in IDENTITIES
         assert "grok_build" in sg.VALID_AGENTS
+
+    def test_t1_t3_omp_pi_grok_bot_are_valid_agents(self):
+        from agent_identity import IDENTITIES
+
+        for aid in ("t1_code", "t3_code", "omp", "pi", "grok_bot"):
+            assert aid in IDENTITIES
+            assert aid in sg.VALID_AGENTS

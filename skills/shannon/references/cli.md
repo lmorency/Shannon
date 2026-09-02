@@ -64,7 +64,8 @@ It suppresses the gate call. It does **not** validate anything:
 - Unknown `delegate` role → `ok: true`, `agent_id` equal to the role slug.
 
 Validate ids against the Canonical agent ids table, or against
-`agent_identity.IDENTITIES` (17 entries) directly. On a canonical id the plan's
+`agent_identity.IDENTITIES` directly (`len(IDENTITIES)` is the live count).
+On a canonical id the plan's
 `label` carries that identity's own emoji; a generic ⚙️ means you typo'd.
 
 ## `campaign`

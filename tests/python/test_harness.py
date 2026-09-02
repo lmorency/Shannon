@@ -39,6 +39,11 @@ COMMON_AGENT_CLIS: tuple[tuple[str, str, str, str], ...] = (
     ("kimi", "kimi", "kimi", "Kimi"),
     ("opencode", "opencode", "opencode", "OpenCode"),
     ("cursor", "cursor", "cursor", "Cursor"),
+    ("cursor-agent", "cursor-agent", "cursor", "Cursor Agent"),
+    ("t1code", "t1code", "t1_code", "T1 Code"),
+    ("t3code", "t3code", "t3_code", "T3 Code"),
+    ("omp", "omp", "omp", "Oh-My-Pi"),
+    ("pi", "pi", "pi", "Pi"),
 )
 
 COMMON_ALIASES: tuple[tuple[str, str, str], ...] = (
@@ -50,6 +55,10 @@ COMMON_ALIASES: tuple[tuple[str, str, str], ...] = (
     ("oc", "opencode", "opencode"),
     ("ds", "deepseek", "deepseek"),
     ("deepseek_tui", "deepseek", "deepseek"),
+    ("t1-code", "t1code", "t1_code"),
+    ("t3_code", "t3code", "t3_code"),
+    ("oh-my-pi", "omp", "omp"),
+    ("cursor_agent", "cursor-agent", "cursor"),
 )
 
 
@@ -100,6 +109,12 @@ class TestCatalog:
         assert not is_harness_keyword("stdin")
         assert not is_harness_keyword("status")
         assert is_harness_keyword("grok")
+
+    def test_hyphenated_keywords_normalize(self):
+        assert resolve_harness("prime-agent").keyword == "prime-agent"
+        assert resolve_harness("t1-code").keyword == "t1code"
+        assert resolve_harness("oh-my-pi").agent_id == "omp"
+        assert is_harness_keyword("cursor-agent")
 
 
 class TestCommonAgentCLIs:
@@ -446,6 +461,9 @@ class TestCliMain:
         assert "kimi" in out
         assert "opencode" in out
         assert "cursor" in out
+        assert "t1code" in out
+        assert "t3code" in out
+        assert "omp" in out
 
     def test_main_grok_dry_run_via_module(self, tmp_path):
         bindir = _install_fake_agent(tmp_path, "grok")
